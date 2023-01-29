@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
+import heroImage from "../../assets/images/oficebg.jpg";
 
 export const Hero: React.FC = () => {
   return (
     <div
       className="hero min-h-[900px]"
       style={{
-        backgroundImage: `url("../../assets/images/oficebg.jpg")`,
+        backgroundImage: `url("${heroImage}")`,
       }}
     >
       <div className="hero-overlay bg-opacity-60"></div>

@@ -1,3 +1,5 @@
+import mplogo from "../../assets/images/favicon.ico";
+
 export const Footer: React.FC = () => {
   return (
     <footer className="footer p-10 bg-base-200 text-base-content">
@@ -21,10 +23,7 @@ export const Footer: React.FC = () => {
         <a className="link link-hover">Press kit</a> */}
       </div>
       <div>
-        <img
-          src="../../assets/images/favicon.ico"
-          className="w-14 h-14 object-fill"
-        />
+        <img src={mplogo} className="w-14 h-14 object-fill" />
         {/* <span className="footer-title">Legal</span>
         <a className="link link-hover">Terms of use</a>
         <a className="link link-hover">Privacy policy</a>
