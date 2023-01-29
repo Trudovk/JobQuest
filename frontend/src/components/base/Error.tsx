@@ -1,10 +1,11 @@
 type Props = {
   message: string;
+  className?: string;
 };
 
 export const Error: React.FC<Props> = (props) => {
   return (
-    <div className="alert alert-error shadow-lg">
+    <div className={`alert alert-error shadow-lg ${props.className ?? ""}`}>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
