@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
+import { requestVacancies } from "../api";
 import { Pagination } from "../components/base/Pagination";
 import { CardFilter } from "../components/CardFilter";
 import { CardVacancies } from "../components/CardVacancies";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
+export async function loader() {
+  // make api request
+  return await requestVacancies();
+}
+
 export default function Vacancies() {
+  const apiResponse = useLoaderData() as InferLoaderType<typeof loader>;
   const [page, setPage] = useState(1);
   return (
     <>
@@ -21,7 +29,7 @@ export default function Vacancies() {
         </div>
 
         <div className="flex-grow basis-0">
-          <CardVacancies />
+          <CardVacancies vacancies={apiResponse.vacancies} />
         </div>
       </main>
       <Footer />
