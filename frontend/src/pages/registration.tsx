@@ -39,7 +39,7 @@ export default function Registration() {
             label="Фамилия:"
             placeholder="Фамилия"
             type="text"
-            name="last-Name"
+            name="last-name"
             required={true}
           />
           <Input
