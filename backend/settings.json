@@ -2,5 +2,6 @@
     "DATABASE": "./data/database.db",
     "DEBUG": true,
     "USERNAME": "admin",
-    "PASSWORD": "default"
+    "PASSWORD": "default",
+    "APP_FOLDER": "../frontend/dist/client/"
 }

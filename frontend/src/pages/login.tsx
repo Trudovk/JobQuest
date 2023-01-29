@@ -10,11 +10,13 @@ import { Header } from "../components/Header";
 // }
 
 export default function Login() {
+  const urlparams = new URLSearchParams(window.location.search);
+  const errorMessage = urlparams.get("error");
   return (
     <>
       <Header />
       <section className="w-96 flex h-fit	justify-center flex-col card bg-base-200 shadow-xl mx-auto my-6 p-8">
-        {/* <Error message="ПРЯЯЯЯЯЯЯЯЯЯЯЯ ЯЯЯЯЯЯЯЯЯ ЯЯЯНИК." /> */}
+        {!!errorMessage && <Error message={errorMessage} className="mb-6" />}
         <h1 className="text-center font-bold text-2xl">Вход</h1>
         <form className="h-min flex flex-wrap" method="POST" action="">
           <Input

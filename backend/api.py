@@ -38,6 +38,9 @@ def register():
     ):
         return redirect("/registration?error=Недостаточно данных в запросе")
 
+    if form["password"] != form["passwordconfirm"]:
+        return redirect("/registration?error=Пароли не совпадают друг с другом")
+
     captcha_valid = captchas.validate_captcha_pair(
         form["captcha"], form["captcha-hash"]
     )
@@ -51,7 +54,7 @@ def register():
     if not result:
         return redirect("/registration?error=Пользователь с этим Email уже существует")
 
-    return ""
+    return redirect("/")
 
 
 @api_bp.route("/requestcaptcha")
@@ -74,7 +77,7 @@ def jobs():
 
     fil = "WHERE recruiter_id = ?" if recruiter != None else ""
     query_args = (perpage, (page*perpage) - perpage)
-    query = db.get_db().execute(f"SELECT * FROM vacancies {fil} ORDER BY id DESC LIMIT ? OFFSET ?",
+    query = db.get_db().execute(f"SELECT recruiters.company_name, vacancies.* FROM recruiters {fil} LEFT JOIN vacancies ON recruiters.id=vacancies.recruiter_id ORDER BY id DESC LIMIT ? OFFSET ?",
                                 query_args if recruiter == None else (recruiter, query_args[0], query_args[1]))
     vacancies = query.fetchall()
     vacancies = list(map(dict, vacancies))

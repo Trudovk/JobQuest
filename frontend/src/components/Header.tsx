@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Header: React.FC = () => {
   return (
     <div className="navbar bg-base-100">
@@ -53,12 +55,14 @@ export const Header: React.FC = () => {
             </li>
           </ul>
         </div>
-        <a className="btn btn-ghost normal-case text-xl">JobQuest</a>
+        <Link to="/" className="btn btn-ghost normal-case text-xl">
+          JobQuest
+        </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a>Вакансии</a>
+            <Link to="/vacancies">Вакансии</Link>
           </li>
           <li tabIndex={0}>
             <a>
@@ -113,7 +117,9 @@ export const Header: React.FC = () => {
             </button>
           </div>
         </div>
-        <a className="btn">Войти</a>
+        <Link to="/login" className="btn">
+          Войти
+        </Link>
       </div>
     </div>
   );

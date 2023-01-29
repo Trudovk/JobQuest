@@ -24,7 +24,7 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
     salt = generate_random_sha1()
     hash = hash_password(password, salt)
 
-    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email))
+    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email,))
     existing_user = query.fetchone()
 
     # if user exists, return
@@ -39,8 +39,10 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
 
 
 def authenticate_user(email: str, password: str):
-    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email))
+    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email,))
     user = query.fetchone()
+    if user == None:
+        return
     entered_hash = hash_password(password, user.salt)
     if entered_hash != user.passhash:
         return

@@ -1,9 +1,12 @@
+import { Link } from "react-router-dom";
+import heroImage from "../../assets/images/oficebg.jpg";
+
 export const Hero: React.FC = () => {
   return (
     <div
       className="hero min-h-[900px]"
       style={{
-        backgroundImage: `url("../../assets/images/oficebg.jpg")`,
+        backgroundImage: `url("${heroImage}")`,
       }}
     >
       <div className="hero-overlay bg-opacity-60"></div>
@@ -14,8 +17,12 @@ export const Hero: React.FC = () => {
             Найти работу мечты быстро и удобно вместе с JobQuest. Так же можете
             опубликовать вакансию прямо сейчас за 5 минут!
           </p>
-          <button className="btn btn-secondary ">Вакансии</button>
-          <button className="btn btn-primary ml-8">Зарегистрироваться</button>
+          <Link to="/vacancies" className="btn btn-secondary ">
+            Вакансии
+          </Link>
+          <Link to="/registration" className="btn btn-primary ml-8">
+            Зарегистрироваться
+          </Link>
         </div>
       </div>
     </div>

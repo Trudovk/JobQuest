@@ -32,6 +32,8 @@ CREATE TABLE vacancies (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     recruiter_id INTEGER NOT NULL,
   
+    city TEXT NOT NULL,
+
     job_name TEXT NOT NULL,
     job_description TEXT,
     min_salary INTEGER,
@@ -64,82 +66,92 @@ INSERT INTO recruiters (owner_id,company_name,company_description,website,contac
 
 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project Manager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 );
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project Manager1',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project1 Manager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project 34Manager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project Ma6nager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project Man456ager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   1,
   'Project Mana2ger',
   'Вам будет нуж2но менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   2,
   'Proje2ct Manager',
   'Вам будет нужно 2менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   2,
   'P1r0oject Manager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
 
-INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary) VALUES (
+INSERT INTO vacancies (recruiter_id,job_name,job_description,min_salary,max_salary,city) VALUES (
   2,
   'Project Ma2nager',
   'Вам будет нужно менеджить проект',
   100000,
-  150000
+  150000,
+  "Москва"
 ); 
