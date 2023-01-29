@@ -1,14 +1,16 @@
 import { useLoaderData } from "react-router-dom";
+import { endpoint, requestCaptcha } from "../api";
 import { Input } from "../components/base/Input";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
-// export async function loader() {
-//   // make api request
-//   return "api response";
-// }
+export async function loader() {
+  // make api request
+  return await requestCaptcha();
+}
 
 export default function Registration() {
+  const apiResponse = useLoaderData() as InferLoaderType<typeof loader>;
   return (
     <>
       <Header />
@@ -59,12 +61,12 @@ export default function Registration() {
               required={true}
             />
             <img
-              src="https://cdn.discordapp.com/attachments/394865284978049026/1069303080228761720/5f62b382115cb59bd12fcfa8abb8229fdc695b76.png"
+              src={endpoint + apiResponse.link}
               alt="captcha"
               className="rounded-md flex-shrink-0 w-36"
             />
           </div>
-          <input type="hidden" name="captcha-hash" value={0} />
+          <input type="hidden" name="captcha-hash" value={apiResponse.hash} />
           <input
             type="submit"
             className="btn btn-outline mx-auto mt-8"
