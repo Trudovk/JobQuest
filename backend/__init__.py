@@ -1,6 +1,6 @@
 from . import captchas, api
 from flask import Flask, request, session
-
+from flask_cors import CORS, cross_origin
 from os import mkdir
 
 
@@ -20,6 +20,9 @@ def create_app():
     from json import load
 
     app.config.from_file("./settings.json", load=load)
+
+    if app.config["DEBUG"]:
+        CORS(app)
 
     from . import db
     db.init_app(app)
