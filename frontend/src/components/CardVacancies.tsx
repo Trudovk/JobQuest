@@ -12,9 +12,9 @@ export const CardVacancies: React.FC<Props> = (props) => {
         <Vacancy
           post={p.job_name}
           pay={p.min_salary + "₽ - " + p.max_salary + "₽"}
-          company="КурсачКомпани"
+          company={p.company_name}
           description={p.job_description}
-          city="Москва"
+          city={p.city}
         />
       ))}
     </div>
