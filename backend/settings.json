@@ -1,0 +1,6 @@
+{
+    "DATABASE": "./data/database.db",
+    "DEBUG": true,
+    "USERNAME": "admin",
+    "PASSWORD": "default"
+}
