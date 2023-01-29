@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Hero: React.FC = () => {
   return (
     <div
@@ -14,8 +16,12 @@ export const Hero: React.FC = () => {
             Найти работу мечты быстро и удобно вместе с JobQuest. Так же можете
             опубликовать вакансию прямо сейчас за 5 минут!
           </p>
-          <button className="btn btn-secondary ">Вакансии</button>
-          <button className="btn btn-primary ml-8">Зарегистрироваться</button>
+          <Link to="/vacancies" className="btn btn-secondary ">
+            Вакансии
+          </Link>
+          <Link to="/registration" className="btn btn-primary ml-8">
+            Зарегистрироваться
+          </Link>
         </div>
       </div>
     </div>
