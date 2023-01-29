@@ -1,4 +1,4 @@
-type Props = {
+export type Props = {
   post: string;
   pay: string;
   company: string;
