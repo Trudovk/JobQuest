@@ -12,7 +12,6 @@ import { Header } from "../components/Header";
 export default function Login() {
   const urlparams = new URLSearchParams(window.location.search);
   const errorMessage = urlparams.get("error");
-  console.log(errorMessage);
   return (
     <>
       <Header />
