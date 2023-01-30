@@ -14,39 +14,44 @@ export default function Addvacancy() {
             placeholder="Должность"
             type="text"
             name="post"
-            required={true}
+            required
           />
           <Input
-            label="Зарплата:"
-            placeholder="Зарплата"
-            type="text"
+            label="Зарплата от:"
+            placeholder="10000"
+            type="number"
             name="pay"
-            required={true}
+          />
+          <Input
+            label="Зарплата до:"
+            placeholder="20000"
+            type="number"
+            name="pay"
           />
           <Input
             label="Компания:"
             placeholder="Компания"
             type="text"
             name="company"
-            required={true}
+            required
           />
           <Input
             label="Описание:"
             placeholder="Описание"
             type="text"
             name="description"
-            required={true}
+            required
           />
           <Input
             label="Город:"
             placeholder="Город"
             type="text"
             name="city"
-            required={true}
+            required
           />
           <input
             type="submit"
-            className="btn btn-outline mx-auto"
+            className="btn btn-outline mx-auto mt-6"
             value="Подтвердить"
           />
         </form>

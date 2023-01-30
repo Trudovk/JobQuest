@@ -18,7 +18,8 @@ def login():
 
     res = make_response()
     res.set_cookie("session", session)
-    return res
+    res.headers.add("Location", "/lk")
+    return res, 301
 
 
 @api_bp.route("/register", methods=["POST"])
@@ -93,17 +94,71 @@ def profile():
     user = auth.get_user_from_session(
         request.cookies["session"]) if "session" in request.cookies else None
     if user == None:
-        return redirect("/registration?error=Эта сессия больше недействительна")
+        return {"error": "session invalid"}
 
     return user
 
 
+@api_bp.route("/profile/companies")
+def companies():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+    if user == None:
+        return {"error": "session invalid"}
+
+    query = db.get_db().execute(
+        "SELECT * FROM recruiters WHERE owner_id = ?", (user["id"],))
+    comps = map(dict, query.fetchall())
+    return list(comps)
+
+
 @api_bp.route("/company/<id>")
 def company(id: str):
-    query = db.get_db().execute("SELECT * FROM recruiters WHERE id = ?", (id))
+    query = db.get_db().execute("SELECT * FROM recruiters WHERE id = ?", (id,))
     company = query.fetchone()
 
     if company == None:
         return {"error": "Такой компании не существует"}
 
     return dict(company)
+
+
+@api_bp.route("/profile/createcompany", methods=["POST"])
+def create_company():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'company' in form) or
+        (not 'email' in form) or
+        (not 'description' in form)
+    ):
+        return redirect("/addcompany?error=Недостаточно данных в запросе")
+
+    query = db.get_db().execute(
+        "INSERT INTO recruiters (owner_id, company_name, company_description, website, contact_email) VALUES (?, ?, ?, ?, ?)", (user["id"], form["company"], form["description"], form["website"], form["email"]))
+    db.get_db().commit()
+
+    return redirect("/lk")
+
+
+@api_bp.route("/invalidatesession", methods=["POST"])
+def invalidate_session():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/")
+
+    query = db.get_db().execute(
+        "UPDATE users SET session_token = NULL WHERE id = ?", (user["id"],))
+    db.get_db().commit()
+
+    res = make_response()
+    res.delete_cookie("session")
+    res.headers.add("Location", "/")
+    return res, 301

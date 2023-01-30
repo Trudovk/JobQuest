@@ -2,3 +2,4 @@ Flask
 autopep8
 captcha
 flask-cors
+requests

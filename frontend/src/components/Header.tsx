@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export const Header: React.FC = () => {
+  const loggedIn = document.cookie.indexOf("session=") !== -1;
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -117,12 +118,21 @@ export const Header: React.FC = () => {
             </button>
           </div>
         </div>
-        <Link to="/registration" className="btn mr-2">
-          Регистрация
-        </Link>
-        <Link to="/login" className="btn">
-          Войти
-        </Link>
+        {!loggedIn && (
+          <>
+            <Link to="/registration" className="btn mr-2">
+              Регистрация
+            </Link>
+            <Link to="/login" className="btn">
+              Войти
+            </Link>
+          </>
+        )}
+        {loggedIn && (
+          <Link to="/lk" className="btn mr-2">
+            Личный кабинет
+          </Link>
+        )}
       </div>
     </div>
   );

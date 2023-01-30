@@ -1,7 +1,8 @@
 from os import mkdir
-from flask_cors import CORS, cross_origin
-from flask import Flask, request, session, send_file, send_from_directory
+from flask_cors import CORS
+from flask import Flask, send_from_directory, request, Response
 from . import captchas, api
+# from requests import request as rq
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -40,6 +41,25 @@ app = create_app()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path: str):
+    # if app.config["DEBUG"]:
+    #     res = rq(
+    #         method=request.method,
+    #         url=request.url.replace(request.host_url, f'127.0.0.1:5173/'),
+    #         headers={k: v for k, v in request.headers if k.lower() == 'host'},
+    #         data=request.get_data(),
+    #         cookies=request.cookies,
+    #         allow_redirects=False,
+    #     )
+
+    #     excluded_headers = ['content-encoding',
+    #                         'content-length', 'transfer-encoding', 'connection']
+    #     headers = [
+    #         (k, v) for k, v in res.raw.headers.items()
+    #         if k.lower() not in excluded_headers
+    #     ]
+
+    #     return Response(res.content, res.status_code, headers)
+
     return send_from_directory(app.config["APP_FOLDER"], "index.html")
 
 

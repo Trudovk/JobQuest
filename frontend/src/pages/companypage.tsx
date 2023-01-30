@@ -1,6 +1,5 @@
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
-import { YourCompany } from "../components/YourCompany";
 import { YourVacancy } from "../components/YourVacancy";
 
 export default function CompanyPage() {
