@@ -11,17 +11,6 @@ mimetypes.add_type('application/javascript', '.cjs')
 mimetypes.add_type('text/css', '.css')
 
 
-def mkdir_if_doesnt_exist(path: str):
-    try:
-        mkdir(path)
-    except FileExistsError:
-        pass
-
-
-mkdir_if_doesnt_exist("./data")
-mkdir_if_doesnt_exist("./data/captchas")
-
-
 def create_app():
     app = Flask(__name__)
     from json import load

@@ -27,6 +27,7 @@ async function makeRequest(path: string) {
   const res = await fetch(`${endpoint}${path}`);
   try {
     const response = await res.json();
+    console.log(`Requested "${path}", got: `, response);
     if ("error" in response && response.error === "session invalid") {
       return invalidSession();
     }
