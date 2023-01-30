@@ -6,7 +6,7 @@
   "scripts": {
     "flask": "\"../backend/env/Scripts/activate\" && cd ../backend && flask --app . ",
     "flask:initdb": "npm run flask init-db",
-    "flask:clear": "cd ../backend && python ../backend/clear.py",
+    "flask:clear": "cd ../backend && py ../backend/clear.py",
     "flask:reset": "npm run flask:clear && npm run flask:initdb",
     "dev:vite": "vite",
     "dev:flask": "npm run flask --debug run",

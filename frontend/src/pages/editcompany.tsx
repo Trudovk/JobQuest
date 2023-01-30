@@ -7,7 +7,9 @@ export default function Editcompany() {
     <>
       <Header />
       <section className="w-[400px] flex h-fit	justify-center flex-col card bg-base-200 shadow-xl mx-auto my-6 p-8">
-        <h1 className="text-center font-bold text-2xl">Изменение вакансии</h1>
+        <h1 className="text-center font-bold text-2xl">
+          Изменение данных компании
+        </h1>
         <form className="h-min flex flex-wrap" method="POST" action="">
           <Input
             label="Компания:"
@@ -33,7 +35,7 @@ export default function Editcompany() {
           <Input
             label="О компании:"
             placeholder="Описание"
-            type="text"
+            type="textarea"
             name="description"
             required={true}
           />

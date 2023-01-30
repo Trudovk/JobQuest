@@ -1,7 +1,8 @@
+import { VacancyType } from "../api";
 import { Vacancy } from "./Vacancy";
 
 type Props = {
-  vacancies: any;
+  vacancies: VacancyType[];
 };
 
 export const CardVacancies: React.FC<Props> = (props) => {
@@ -12,6 +13,7 @@ export const CardVacancies: React.FC<Props> = (props) => {
           post={p.job_name}
           pay={[p.min_salary, p.max_salary]}
           company={p.company_name}
+          company_id={p.recruiter_id}
           description={p.job_description}
           city={p.city}
         />

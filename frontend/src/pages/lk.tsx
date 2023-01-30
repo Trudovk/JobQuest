@@ -3,7 +3,6 @@ import { requestOwnedCompanies, requestProfile } from "../api";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { YourCompany } from "../components/YourCompany";
-import { YourVacancy } from "../components/YourVacancy";
 
 export async function loader() {
   const companies = await requestOwnedCompanies();
@@ -26,7 +25,7 @@ export default function Lk() {
             </h2>
             <div>{profile.email}</div>
             <form action="/api/invalidatesession" method="post">
-              <button type="submit" className="btn btn-error">
+              <button type="submit" className="btn btn-error mt-4">
                 Выход
               </button>
             </form>
@@ -42,7 +41,7 @@ export default function Lk() {
         </div>
         <div>
           <h2 className="my-4 font-bold">Ваши компании:</h2>
-          <div className="card bg-base-200 p-4 h-fit">
+          <div className="card bg-base-200 p-4 h-fit shadow-lg">
             {companies.map((c) => (
               <YourCompany
                 id={c.id}
@@ -53,18 +52,19 @@ export default function Lk() {
             ))}
           </div>
         </div>
-        <div>
+        {/* <div>
           <h2 className="my-4 font-bold">Ваши вакансии:</h2>
           <div className="card bg-base-200 p-4 h-fit">
-            <YourVacancy
+            <Vacancy
               post="Менеджер по продажам"
-              pay="1300$ - 1500$"
+              pay={[130000, 150000]}
               company="КурсачКомпани"
               description="Exorcizamus te, omnis immundus spiritus, omnis satanica potestas, omnis incursio infernalis adversarii, omnis legio, omnis congregatio et secta diabolica, in nomine et virtute Domini Nostri Jesu + Christi, eradicare et effugare a Dei Ecclesia, ab animabus ad imaginem Dei conditis ac pretioso divini Agni sanguine redemptis + . "
               city="Москва"
+              owned
             />
           </div>
-        </div>
+        </div> */}
       </main>
       <Footer />
     </>

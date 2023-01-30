@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Contact } from "./base/Contact";
 
 type Props = {
   id: number;
@@ -11,17 +12,12 @@ export const YourCompany: React.FC<Props> = (props) => {
   return (
     <div className="border-b border-neutral last:border-b-0 py-2">
       <h2 className="font-bold mb-2">{props.company}</h2>
-      <div className="flex gap-2">
+      <div className="flex gap-6">
         <div className="">
           <div className="font-medium">Контакты компании:</div>
           <div>
             {props.contacts.map((c) => (
-              <a
-                className="link link-accent block"
-                href={(c.includes("@") ? "mailto:" : "") + c}
-              >
-                {c}
-              </a>
+              <Contact contact={c} />
             ))}
           </div>
         </div>

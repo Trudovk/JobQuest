@@ -39,7 +39,7 @@ export default function Addcompany() {
           <Input
             label="О компании:"
             placeholder="Описание"
-            type="text"
+            type="textarea"
             name="description"
             required
           />

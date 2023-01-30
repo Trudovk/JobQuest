@@ -78,13 +78,13 @@ def jobs():
 
     fil = "WHERE recruiter_id = ?" if recruiter != None else ""
     query_args = (perpage, (page*perpage) - perpage)
-    query = db.get_db().execute(f"SELECT recruiters.company_name, vacancies.* FROM recruiters {fil} LEFT JOIN vacancies ON recruiters.id=vacancies.recruiter_id ORDER BY id DESC LIMIT ? OFFSET ?",
+    query = db.get_db().execute(f"SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id {fil} ORDER BY id DESC LIMIT ? OFFSET ?",
                                 query_args if recruiter == None else (recruiter, query_args[0], query_args[1]))
     vacancies = query.fetchall()
     vacancies = list(map(dict, vacancies))
 
     count = db.get_db().execute(
-        f"SELECT COUNT(*) FROM vacancies {fil}", (recruiter) if recruiter != None else ()).fetchone()[0]
+        f"SELECT COUNT(*) FROM vacancies {fil}", (recruiter,) if recruiter != None else ()).fetchone()[0]
 
     return {"pagination": {"page": page, "perpage": perpage, "pages": ceil(count/perpage), "entries": count}, "vacancies": vacancies}
 

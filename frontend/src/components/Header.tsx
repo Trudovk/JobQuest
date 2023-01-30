@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export const Header: React.FC = () => {
   const loggedIn = document.cookie.indexOf("session=") !== -1;
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 shadow-lg">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -93,12 +93,12 @@ export const Header: React.FC = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <div className="form-control mx-auto">
+        <div className="form-control mr-5">
           <div className="input-group">
             <input
               type="text"
               placeholder="Search…"
-              className="input input-bordered"
+              className="input input-bordered w-16 sm:w-32 md:w-40"
             />
             <button className="btn btn-square">
               <svg

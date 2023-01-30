@@ -1,9 +1,13 @@
+import { Link } from "react-router-dom";
+
 export type Props = {
   post: string;
   pay: [number | null, number | null];
   company: string;
+  company_id: number;
   description: string;
   city: string;
+  owned?: boolean;
 };
 
 const payPrefix = (pay: [number | null, number | null]) => {
@@ -30,10 +34,15 @@ export const Vacancy: React.FC<Props> = (props) => {
       <div className="flex gap-2 ">
         <div className="">
           <div className="font-medium text-green-600">{pay}</div>
-          <div>{props.company}</div>
+          <Link to={`/companypage?id=${props.company_id}`}>
+            {props.company}
+          </Link>
         </div>
         <p className="block flex-grow">{props.description}</p>
-        <button className="btn">Перейти</button>
+        <div className="flex flex-col justify-between gap-2">
+          {props.owned && <button className="btn">Редактировать</button>}
+          <button className="btn">Перейти</button>
+        </div>
       </div>
     </div>
   );
