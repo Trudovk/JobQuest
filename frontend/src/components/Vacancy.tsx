@@ -17,28 +17,35 @@ const payPrefix = (pay: [number | null, number | null]) => {
   return "";
 };
 
-export const Vacancy: React.FC<Props> = (props) => {
+const whitespaceNumber = (n: number) =>
+  n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+export const Pay = (p: { pay: Props["pay"] }) => {
   const pay = [
-    payPrefix(props.pay),
-    props.pay
+    payPrefix(p.pay),
+    p.pay
       .filter((p) => !!p)
-      .map((p) => `${p}₽`)
-      .join(" - "),
+      .map((p) => `${whitespaceNumber(p as number)} ₽`)
+      .join(" – "),
   ].join(" ");
+  return <div className="font-medium text-green-600">{pay}</div>;
+};
+
+export const Vacancy: React.FC<Props> = (props) => {
   return (
     <div className="border-b border-neutral last:border-b-0 py-2">
       <div className="flex justify-between mb-2">
         <h2 className="font-bold">{props.post}</h2>
         <div>г. {props.city}</div>
       </div>
-      <div className="flex gap-2 ">
-        <div className="">
-          <div className="font-medium text-green-600">{pay}</div>
+      <div className="flex gap-4 items-start">
+        <div className="md:min-w-[10rem]">
+          <Pay pay={props.pay} />
           <Link to={`/companypage?id=${props.company_id}`}>
             {props.company}
           </Link>
         </div>
-        <p className="block flex-grow">{props.description}</p>
+        <p className="block flex-grow line-clamp-3">{props.description}</p>
         <div className="flex flex-col justify-between gap-2">
           {props.owned && <button className="btn">Редактировать</button>}
           <button className="btn">Перейти</button>

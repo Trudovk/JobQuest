@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { redirect } from "react-router-dom";
 
 // export const endpoint = import.meta.env.DEV ? "http://127.0.0.1:5000" : "";
 export const endpoint = "";
@@ -50,7 +51,7 @@ function delete_cookie(name: string, path?: string, domain?: string) {
 async function makeRequest<T>(path: string): Promise<T> {
   const invalidSession = () => {
     delete_cookie("session");
-    window.location.href = "/login?error=Сессия истекла, войдите снова";
+    redirect("/login?error=Сессия истекла, войдите снова");
   };
 
   const res = await fetch(`${endpoint}${path}`);

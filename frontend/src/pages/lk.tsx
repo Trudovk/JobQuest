@@ -46,7 +46,9 @@ export default function Lk() {
               <YourCompany
                 id={c.id}
                 company={c.company_name}
-                contacts={[c.contact_email, c.website ?? undefined]}
+                contacts={
+                  [c.contact_email, c.website].filter((c) => !!c) as string[]
+                }
                 description={c.company_description}
               />
             ))}

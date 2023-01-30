@@ -1,4 +1,4 @@
-import { Input } from "../components/base/Input";
+import { Input, Textarea } from "../components/base/Input";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
@@ -26,16 +26,15 @@ export default function Editcompany() {
             required={true}
           />
           <Input
-            label="Ссылка на сайт компании(не обязательно):"
+            label="Ссылка на сайт компании (не обязательно):"
             placeholder="Ссылка"
-            type="text"
+            type="url"
             name="link"
             required={true}
           />
-          <Input
+          <Textarea
             label="О компании:"
             placeholder="Описание"
-            type="textarea"
             name="description"
             required={true}
           />

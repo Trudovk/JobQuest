@@ -1,5 +1,5 @@
 import { Error } from "../components/base/Error";
-import { Input } from "../components/base/Input";
+import { Input, Textarea } from "../components/base/Input";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
@@ -31,15 +31,14 @@ export default function Addcompany() {
             required
           />
           <Input
-            label="Ссылка на сайт компании(не обязательно):"
+            label="Ссылка на сайт компании (не обязательно):"
             placeholder="Ссылка"
-            type="text"
-            name="website"
+            type="url"
+            name="link"
           />
-          <Input
+          <Textarea
             label="О компании:"
             placeholder="Описание"
-            type="textarea"
             name="description"
             required
           />

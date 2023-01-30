@@ -140,7 +140,7 @@ def create_company():
         return redirect("/addcompany?error=Недостаточно данных в запросе")
 
     query = db.get_db().execute(
-        "INSERT INTO recruiters (owner_id, company_name, company_description, website, contact_email) VALUES (?, ?, ?, ?, ?)", (user["id"], form["company"], form["description"], form["website"], form["email"]))
+        "INSERT INTO recruiters (owner_id, company_name, company_description, website, contact_email) VALUES (?, ?, ?, ?, ?)", (user["id"], form["company"], form["description"], form["link"] if "link" in form else None, form["email"]))
     db.get_db().commit()
 
     return redirect("/lk")

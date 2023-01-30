@@ -7,7 +7,7 @@ type Props = {
 
 export const CardVacancies: React.FC<Props> = (props) => {
   return (
-    <div className="card h-96 bg-base-200 p-4 h-fit">
+    <div className="card bg-base-200 p-4 h-fit shadow-xl">
       {props.vacancies.map((p) => (
         <Vacancy
           post={p.job_name}
@@ -16,6 +16,7 @@ export const CardVacancies: React.FC<Props> = (props) => {
           company_id={p.recruiter_id}
           description={p.job_description}
           city={p.city}
+          key={p.id}
         />
       ))}
     </div>

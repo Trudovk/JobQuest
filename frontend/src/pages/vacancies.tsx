@@ -16,13 +16,13 @@ import { Header } from "../components/Header";
 export default function Vacancies() {
   // const apiResponse = useLoaderData() as InferLoaderType<typeof loader>;
   const [page, setPage, result] = usePagination(
-    (p) => requestVacancies(p, 4),
+    (p) => requestVacancies(p, 7),
     1
   );
   return (
     <>
       <Header />
-      <main className="flex gap-6 p-6 flex-wrap justify-center">
+      <main className="flex gap-6 p-6 flex-wrap justify-center flex-grow">
         <div className="h-fit md:sticky top-6 flex flex-col gap-3 items-center flex-shrink">
           <CardFilter />
           {!result && <VisualSuspense width="16rem" height="3rem" />}

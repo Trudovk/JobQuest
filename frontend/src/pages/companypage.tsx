@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { LoaderFunctionArgs, redirect, useLoaderData } from "react-router-dom";
 import { requestCompany, requestVacancies, userOwnsCompany } from "../api";
 import { Contact } from "../components/base/Contact";
 import { Footer } from "../components/Footer";
@@ -8,10 +8,8 @@ import { Vacancy } from "../components/Vacancy";
 export async function loader(a: LoaderFunctionArgs) {
   const query = new URL(a.request.url).searchParams;
   const id = query.get("id");
-  if (!id) {
-    window.location.href = "/vacancies";
-    return {};
-  }
+  if (!id) return redirect("/vacancies") as never;
+
   const companyData = await requestCompany(parseInt(id));
   const vacancies = await requestVacancies(1, 100, parseInt(id));
   const userOwns = await userOwnsCompany(parseInt(id));
@@ -30,7 +28,11 @@ export default function CompanyPage() {
             <h2 className="font-medium text-2xl">{companyData.company_name}</h2>
             <div>
               <h3 className="font-medium">Контакты компании:</h3>
-              {[companyData.contact_email, companyData.website].map((c) => (
+              {(
+                [companyData.contact_email, companyData.website].filter(
+                  (c) => !!c
+                ) as string[]
+              ).map((c) => (
                 <Contact contact={c} />
               ))}
             </div>
