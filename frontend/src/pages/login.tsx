@@ -18,7 +18,11 @@ export default function Login() {
       <section className="w-96 flex h-fit	justify-center flex-col card bg-base-200 shadow-xl mx-auto my-6 p-8">
         {!!errorMessage && <Error message={errorMessage} className="mb-6" />}
         <h1 className="text-center font-bold text-2xl">Вход</h1>
-        <form className="h-min flex flex-wrap" method="POST" action="">
+        <form
+          className="h-min flex flex-wrap"
+          method="POST"
+          action="/api/login"
+        >
           <Input
             label="Email:"
             placeholder="example@example.com"
