@@ -1,4 +1,5 @@
-export const endpoint = import.meta.env.DEV ? "http://127.0.0.1:5000" : "";
+// export const endpoint = import.meta.env.DEV ? "http://127.0.0.1:5000" : "";
+export const endpoint = "";
 
 function get_cookie(name: string) {
   return document.cookie.split(";").some((c) => {
