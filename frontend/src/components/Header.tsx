@@ -117,6 +117,9 @@ export const Header: React.FC = () => {
             </button>
           </div>
         </div>
+        <Link to="/registration" className="btn mr-2">
+          Регистрация
+        </Link>
         <Link to="/login" className="btn">
           Войти
         </Link>
