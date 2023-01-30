@@ -5,7 +5,6 @@ type Props = {
 };
 
 export const CardVacancies: React.FC<Props> = (props) => {
-  console.log(props.vacancies);
   return (
     <div className="card  h-96 bg-base-200 p-4 h-fit">
       {props.vacancies.map((p) => (
