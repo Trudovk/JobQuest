@@ -4,6 +4,8 @@ from math import ceil
 
 api_bp = Blueprint("api", __name__)
 
+# AUTH
+
 
 @api_bp.route("/login", methods=["POST"])
 def login():
@@ -57,6 +59,8 @@ def register():
 
     return redirect("/")
 
+# CAPTCHAS
+
 
 @api_bp.route("/requestcaptcha")
 def request_captcha():
@@ -66,7 +70,10 @@ def request_captcha():
 
 @api_bp.route("/servecaptcha/<hashstr>")
 def serve_captcha(hashstr: str):
+    # TODO: use from directory variant to fix vuln (ex.: /servecaptcha/../captcha_salt.txt)
     return send_file(f"./data/captchas/{hashstr}.png")
+
+# VACANCIES
 
 
 @api_bp.route("/jobs")
@@ -97,6 +104,8 @@ def profile():
         return {"error": "session invalid"}
 
     return user
+
+# COMPANIES
 
 
 @api_bp.route("/profile/companies")
@@ -146,6 +155,74 @@ def create_company():
     return redirect("/lk")
 
 
+@api_bp.route("/profile/editcompany", methods=["POST"])
+def edit_company():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'id' in form) or
+        (not 'company' in form) or
+        (not 'email' in form) or
+        (not 'description' in form)
+    ):
+        return redirect("/addcompany?error=Недостаточно данных в запросе")
+
+    query_company = db.get_db().execute(
+        "SELECT FROM recruiters WHERE id=?", (form["id"]))
+
+    companydata = query_company.fetchone()
+
+    if user["id"] != companydata["owner_id"]:
+        return redirect("/editcompany?error=Эта компания вам не принадлежит")
+
+    website = form["website"] if "website" in form else None
+
+    query = db.get_db().execute(
+        "UPDATE recruiters SET company_name=?, company_description=?, website=?, contact_email=? WHERE id=?",
+        (form["company"], form["description"],
+         website, form["email"], form["id"])
+    )
+    db.get_db().commit()
+
+    return redirect("/lk")
+
+
+@api_bp.route("/profile/deletecompany", methods=["POST"])
+def delete_company():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'id' in form)
+    ):
+        return redirect("/editcompany?error=Недостаточно данных в запросе")
+
+    query_company = db.get_db().execute(
+        "SELECT FROM recruiters WHERE id=?", (form["id"]))
+
+    companydata = query_company.fetchone()
+
+    if user["id"] != companydata["owner_id"]:
+        return redirect(f"/editcompany?id={form['id']}&error=Эта компания вам не принадлежит")
+
+    query = db.get_db().execute(
+        "DELETE FROM recruiters WHERE id=?", (form["id"],))
+    db.get_db().commit()
+
+    return redirect("/lk")
+
+# LOGOUT
+
+
 @api_bp.route("/invalidatesession", methods=["POST"])
 def invalidate_session():
     user = auth.get_user_from_session(
@@ -162,3 +239,112 @@ def invalidate_session():
     res.delete_cookie("session")
     res.headers.add("Location", "/")
     return res, 301
+
+
+@api_bp.route("/vacancy/<id>")
+def vacancy(id: str):
+    query = db.get_db().execute("SELECT * FROM vacancies WHERE id = ?", (id,))
+    vacancy = query.fetchone()
+
+    if vacancy == None:
+        return {"error": "Такой вакансии не существует"}
+
+    return dict(vacancy)
+
+
+@api_bp.route("/profile/createvacancy", methods=["POST"])
+def create_vacancy():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'company_id' in form) or
+        (not 'job_name' in form) or
+        (not 'city' in form) or
+        (not 'min_salary' in form) or
+        (not 'max_salary' in form)
+    ):
+        return redirect("/addvacancy?error=Недостаточно данных в запросе")
+
+    query_company = db.get_db().execute(
+        "SELECT FROM recruiters WHERE id=?", (form["company_id"]))
+
+    companydata = query_company.fetchone()
+
+    if user["id"] != companydata["owner_id"]:
+        return redirect(f"/addvacancy?id={form['company_id']}&error=Эта компания вам не принадлежит")
+
+    query = db.get_db().execute(
+        "INSERT INTO vacancies (recruiter_id, city, job_description, min_salary, max_salary, job_name) VALUES (?, ?, ?, ?, ?, ?)",
+        (form["company_id"], form["city"], form["description"] if "description" in form else None, int(form["min_salary"]), int(form["max_salary"]), form["job_name"]))
+    db.get_db().commit()
+
+    return redirect("/lk")
+
+
+@api_bp.route("/profile/editvacancy", methods=["POST"])
+def edit_vacancy():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'id' in form) or
+        (not 'company_id' in form) or
+        (not 'job_name' in form) or
+        (not 'city' in form) or
+        (not 'min_salary' in form) or
+        (not 'max_salary' in form)
+    ):
+        return redirect("/addvacancy?error=Недостаточно данных в запросе")
+
+    query_company = db.get_db().execute(
+        "SELECT FROM recruiters WHERE id=?", (form["company_id"]))
+
+    companydata = query_company.fetchone()
+
+    if user["id"] != companydata["owner_id"]:
+        return redirect(f"/addvacancy?id={form['company_id']}&error=Эта компания вам не принадлежит")
+
+    query = db.get_db().execute(
+        "UPDATE vacancies SET recruiter_id=?, city=?, job_description=?, min_salary=?, max_salary=?, job_name=? WHERE id=?",
+        (form["company_id"], form["city"], form["description"] if "description" in form else None, int(form["min_salary"]), int(form["max_salary"]), form["job_name"], form["id"]))
+    db.get_db().commit()
+
+    return redirect(f"/vacancy?id={form['id']}")
+
+
+@api_bp.route("/profile/deletevacancy", methods=["POST"])
+def delete_vacancy():
+    user = auth.get_user_from_session(
+        request.cookies["session"]) if "session" in request.cookies else None
+
+    if user == None:
+        return redirect("/login?error=Сессия истекла, войдите снова")
+
+    form = request.form
+    if (
+        (not 'id' in form)
+    ):
+        return redirect("/editvacancy?error=Недостаточно данных в запросе")
+
+    query_vacancy = db.get_db().execute(
+        "SELECT vacancies WHERE id=?", (form["id"]))
+
+    vacancydata = query_vacancy.fetchone()
+
+    if user["id"] != vacancydata["owner_id"]:
+        return redirect("/editvacancy?error=Эта компания вам не принадлежит")
+
+    query = db.get_db().execute(
+        "DELETE FROM vacancies WHERE id=?", (form["id"],))
+    db.get_db().commit()
+
+    return redirect("/lk")
