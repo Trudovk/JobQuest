@@ -7,9 +7,10 @@ type Props = {
 
 export const CardVacancies: React.FC<Props> = (props) => {
   return (
-    <div className="card bg-base-200 p-4 h-fit shadow-xl">
+    <div className="card bg-base-200 px-4 py-2 h-fit shadow-xl">
       {props.vacancies.map((p) => (
         <Vacancy
+          id={p.id}
           post={p.job_name}
           pay={[p.min_salary, p.max_salary]}
           company={p.company_name}

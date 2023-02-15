@@ -32,7 +32,7 @@ export const Loader: React.FC = () => {
           width: `${progress * 100}%`,
           transition:
             "width .1s ease, " + `opacity ${loading ? ".01s" : ".5s"} ease`,
-          zIndex: 99999,
+          zIndex: 99999, // TODO: doesn't appear to do anything
           opacity: loading ? 1 : 0,
         }}
         className="bg-accent h-full relative"

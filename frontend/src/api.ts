@@ -24,6 +24,12 @@ export type VacancyType = {
   recruiter_id: number;
 };
 
+export type VacancyExtendedType = VacancyType & {
+  company_name: string;
+  contact_email: string;
+  website: string;
+};
+
 export type PaginationType = {
   entries: number;
   page: number;
@@ -111,6 +117,12 @@ export async function requestVacancies(
     `${endpoint}/api/jobs?page=${page}&perpage=${perpage}&${
       !!companyId ? `recruiter=${companyId}` : ""
     }`
+  );
+}
+
+export async function requestVacancy(id: number) {
+  return await makeRequest<VacancyExtendedType>(
+    `${endpoint}/api/vacancy/${id}`
   );
 }
 

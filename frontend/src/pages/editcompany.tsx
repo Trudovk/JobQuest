@@ -1,8 +1,20 @@
+import { LoaderFunctionArgs, redirect, useLoaderData } from "react-router-dom";
+import { requestCompany } from "../api";
 import { Input, Textarea } from "../components/base/Input";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 
+export async function loader(a: LoaderFunctionArgs) {
+  const query = new URL(a.request.url).searchParams;
+  const id = query.get("id");
+  if (!id) return redirect("/lk") as never;
+
+  const companyData = await requestCompany(parseInt(id));
+  return { companyData };
+}
+
 export default function Editcompany() {
+  const { companyData } = useLoaderData() as InferLoaderType<typeof loader>;
   return (
     <>
       <Header />
@@ -10,40 +22,48 @@ export default function Editcompany() {
         <h1 className="text-center font-bold text-2xl">
           Изменение данных компании
         </h1>
-        <form className="h-min flex flex-wrap" method="POST" action="">
+        <form className="" method="POST" action="/api/profile/editcompany">
+          <input type="hidden" name="id" value={companyData.id} />
           <Input
             label="Компания:"
             placeholder="Название компании"
             type="text"
             name="company"
             required={true}
+            defaultValue={companyData.company_name}
           />
           <Input
-            label="Контакты:"
-            placeholder="Контакты"
-            type="text"
-            name="contacts"
-            required={true}
-          />
-          <Input
-            label="Ссылка на сайт компании (не обязательно):"
-            placeholder="Ссылка"
+            label="Веб-сайт:"
+            placeholder="Веб-сайт"
             type="url"
-            name="link"
+            name="website"
+            required={false}
+            defaultValue={companyData.website ?? ""}
+          />
+          <Input
+            label="Email:"
+            placeholder="Email"
+            type="email"
+            name="email"
             required={true}
+            defaultValue={companyData.contact_email}
           />
           <Textarea
             label="О компании:"
             placeholder="Описание"
             name="description"
             required={true}
+            defaultValue={companyData.company_description}
           />
           <input
             type="submit"
-            className="btn btn-outline mx-auto mt-8"
+            className="btn btn-outline mx-auto mt-3 w-full"
             value="Подтвердить"
           />
-          <button className="btn mx-auto mt-8 bg-red-600">
+        </form>
+        <form method="POST" action="/api/profile/deletecompany">
+          <input type="hidden" name="id" value={companyData.id} />
+          <button type="submit" className="btn mx-auto mt-3 bg-red-600 w-full">
             Удалить компанию
           </button>
         </form>

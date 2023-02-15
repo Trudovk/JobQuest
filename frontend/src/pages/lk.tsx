@@ -17,10 +17,10 @@ export default function Lk() {
   return (
     <>
       <Header />
-      <main className="px-4 my-3">
+      <main className="px-4 my-3 w-full max-w-7xl mx-auto">
         <div className="flex justify-between">
           <div>
-            <h2 className="font-medium text-2xl">
+            <h2 className="font-bold text-3xl">
               {profile.first_name} {profile.last_name}
             </h2>
             <div>{profile.email}</div>
@@ -41,7 +41,7 @@ export default function Lk() {
         </div>
         <div>
           <h2 className="my-4 font-bold">Ваши компании:</h2>
-          <div className="card bg-base-200 p-4 h-fit shadow-lg">
+          <div className="card bg-base-200 px-4 py-2 h-fit shadow-lg">
             {companies.map((c) => (
               <YourCompany
                 id={c.id}

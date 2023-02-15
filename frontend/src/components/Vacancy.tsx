@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export type Props = {
+  id: number;
   post: string;
   pay: [number | null, number | null];
   company: string;
@@ -28,7 +29,7 @@ export const Pay = (p: { pay: Props["pay"] }) => {
       .map((p) => `${whitespaceNumber(p as number)} ₽`)
       .join(" – "),
   ].join(" ");
-  return <div className="font-medium text-green-600">{pay}</div>;
+  return <div className=" text-green-600">{pay}</div>;
 };
 
 export const Vacancy: React.FC<Props> = (props) => {
@@ -40,15 +41,23 @@ export const Vacancy: React.FC<Props> = (props) => {
       </div>
       <div className="flex gap-4 items-start">
         <div className="md:min-w-[10rem]">
-          <Pay pay={props.pay} />
-          <Link to={`/companypage?id=${props.company_id}`}>
+          <div className="font-semibold">
+            <Pay pay={props.pay} />
+          </div>
+          <Link to={`/companypage?id=${props.company_id}`} className="link">
             {props.company}
           </Link>
         </div>
         <p className="block flex-grow line-clamp-3">{props.description}</p>
         <div className="flex flex-col justify-between gap-2">
-          {props.owned && <button className="btn">Редактировать</button>}
-          <button className="btn">Перейти</button>
+          {props.owned && (
+            <Link to={`/editvacancy?id=${props.id}`} className="btn">
+              Редактировать
+            </Link>
+          )}
+          <Link to={`/vacancy?id=${props.id}`} className="btn">
+            Перейти
+          </Link>
         </div>
       </div>
     </div>

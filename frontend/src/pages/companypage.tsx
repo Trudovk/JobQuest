@@ -22,12 +22,14 @@ export default function CompanyPage() {
   return (
     <>
       <Header />
-      <main className="px-4 my-3">
+      <main className="px-4 my-3 mx-auto w-full max-w-7xl">
         <div className="flex justify-between">
           <div>
-            <h2 className="font-medium text-2xl">{companyData.company_name}</h2>
-            <div>
-              <h3 className="font-medium">Контакты компании:</h3>
+            <h2 className="font-bold mb-4 text-4xl">
+              {companyData.company_name}
+            </h2>
+            <div className="mb-2">
+              <h3 className="font-bold">Контакты компании:</h3>
               {(
                 [companyData.contact_email, companyData.website].filter(
                   (c) => !!c
@@ -41,13 +43,14 @@ export default function CompanyPage() {
             <button className="btn">Изменить данные компании</button>
           )}
         </div>
-        <h3 className="font-medium">О компании:</h3>
+        <h3 className="font-bold">О компании:</h3>
         <p>{companyData.company_description}</p>
         <div>
           <h2 className="my-4 font-bold">Вакансии компании:</h2>
-          <div className="card bg-base-200 p-4 h-fit">
+          <div className="card bg-base-200 px-4 py-2 h-fit">
             {vacancies.vacancies.map((v) => (
               <Vacancy
+                id={v.id}
                 post={v.job_name}
                 pay={[v.min_salary, v.max_salary]}
                 company={v.company_name}
