@@ -173,7 +173,7 @@ def edit_company():
         return redirect("/addcompany?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT FROM recruiters WHERE id=?", (form["id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["id"]))
 
     companydata = query_company.fetchone()
 
@@ -207,7 +207,7 @@ def delete_company():
         return redirect("/editcompany?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT FROM recruiters WHERE id=?", (form["id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["id"]))
 
     companydata = query_company.fetchone()
 
@@ -243,7 +243,8 @@ def invalidate_session():
 
 @api_bp.route("/vacancy/<id>")
 def vacancy(id: str):
-    query = db.get_db().execute("SELECT * FROM vacancies WHERE id = ?", (id,))
+    query = db.get_db().execute("SELECT recruiters.company_name, recruiters.website, recruiters.contact_email, vacancies.* FROM recruiters INNER JOIN vacancies ON vacancies.recruiter_id=recruiters.id WHERE vacancies.id = ?",
+                                (id,))
     vacancy = query.fetchone()
 
     if vacancy == None:
@@ -271,7 +272,7 @@ def create_vacancy():
         return redirect("/addvacancy?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT FROM recruiters WHERE id=?", (form["company_id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["company_id"]))
 
     companydata = query_company.fetchone()
 
@@ -306,7 +307,7 @@ def edit_vacancy():
         return redirect("/addvacancy?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT FROM recruiters WHERE id=?", (form["company_id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["company_id"]))
 
     companydata = query_company.fetchone()
 
