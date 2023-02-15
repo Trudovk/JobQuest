@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { attachLoadingCallback } from "./routes";
 
 let interval = 50;
-let slowness = 0.5;
+let slowness = 1;
 
 export const Loader: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,8 @@ export const Loader: React.FC = () => {
       <div
         style={{
           width: `${progress * 100}%`,
-          transition: "width .1s ease, opacity .5s ease",
+          transition:
+            "width .1s ease, " + `opacity ${loading ? ".01s" : ".5s"} ease`,
           zIndex: 99999,
           opacity: loading ? 1 : 0,
         }}
