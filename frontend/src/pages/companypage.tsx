@@ -1,4 +1,9 @@
-import { LoaderFunctionArgs, redirect, useLoaderData } from "react-router-dom";
+import {
+  Link,
+  LoaderFunctionArgs,
+  redirect,
+  useLoaderData,
+} from "react-router-dom";
 import { requestCompany, requestVacancies, userOwnsCompany } from "../api";
 import { Contact } from "../components/base/Contact";
 import { Footer } from "../components/Footer";
@@ -40,7 +45,9 @@ export default function CompanyPage() {
             </div>
           </div>
           {userOwns && (
-            <button className="btn">Изменить данные компании</button>
+            <Link to={`/editcompany?id=${companyData.id}`} className="btn">
+              Изменить данные компании
+            </Link>
           )}
         </div>
         <h3 className="font-bold">О компании:</h3>

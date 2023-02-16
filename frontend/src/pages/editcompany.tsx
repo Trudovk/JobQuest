@@ -19,7 +19,7 @@ export default function Editcompany() {
     <>
       <Header />
       <section className="w-[400px] flex h-fit	justify-center flex-col card bg-base-200 shadow-xl mx-auto my-6 p-8">
-        <h1 className="text-center font-bold text-2xl">
+        <h1 className="text-center font-bold text-2xl mb-4">
           Изменение данных компании
         </h1>
         <form className="" method="POST" action="/api/profile/editcompany">
@@ -63,7 +63,10 @@ export default function Editcompany() {
         </form>
         <form method="POST" action="/api/profile/deletecompany">
           <input type="hidden" name="id" value={companyData.id} />
-          <button type="submit" className="btn mx-auto mt-3 bg-red-600 w-full">
+          <button
+            type="submit"
+            className="btn mx-auto mt-3 btn-error bg-error/30 w-full"
+          >
             Удалить компанию
           </button>
         </form>

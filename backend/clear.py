@@ -1,9 +1,10 @@
-from os import rmdir, mkdir
+from os import mkdir
+from shutil import rmtree
 
 
 def rm(path: str):
     try:
-        rmdir(path)
+        rmtree(path)
     except FileNotFoundError:
         pass
 

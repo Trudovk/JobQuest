@@ -173,7 +173,7 @@ def edit_company():
         return redirect("/addcompany?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=?", (form["id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["id"],))
 
     companydata = query_company.fetchone()
 
@@ -207,15 +207,17 @@ def delete_company():
         return redirect("/editcompany?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=?", (form["id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["id"],))
 
     companydata = query_company.fetchone()
 
     if user["id"] != companydata["owner_id"]:
         return redirect(f"/editcompany?id={form['id']}&error=Эта компания вам не принадлежит")
 
+    query_vac = db.get_db().execute(
+        "DELETE * FROM vacancies WHERE recruiter_id=?", (form["id"],))
     query = db.get_db().execute(
-        "DELETE FROM recruiters WHERE id=?", (form["id"],))
+        "DELETE * FROM recruiters WHERE id=?", (form["id"],))
     db.get_db().commit()
 
     return redirect("/lk")
@@ -272,16 +274,21 @@ def create_vacancy():
         return redirect("/addvacancy?error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=?", (form["company_id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["company_id"],))
 
     companydata = query_company.fetchone()
 
     if user["id"] != companydata["owner_id"]:
-        return redirect(f"/addvacancy?id={form['company_id']}&error=Эта компания вам не принадлежит")
+        return redirect("/addvacancy?error=Эта компания вам не принадлежит")
 
     query = db.get_db().execute(
         "INSERT INTO vacancies (recruiter_id, city, job_description, min_salary, max_salary, job_name) VALUES (?, ?, ?, ?, ?, ?)",
-        (form["company_id"], form["city"], form["description"] if "description" in form else None, int(form["min_salary"]), int(form["max_salary"]), form["job_name"]))
+        (form["company_id"],
+         form["city"],
+         form["description"] if "description" in form else None,
+         int(form["min_salary"]) if form["min_salary"] != '' else None,
+         int(form["max_salary"]) if form["max_salary"] != '' else None,
+         form["job_name"]))
     db.get_db().commit()
 
     return redirect("/lk")
@@ -304,19 +311,25 @@ def edit_vacancy():
         (not 'min_salary' in form) or
         (not 'max_salary' in form)
     ):
-        return redirect("/addvacancy?error=Недостаточно данных в запросе")
+        return redirect(f"/editvacancy?{('id=' + form['id'] + '&') if 'id' in form else ''}error=Недостаточно данных в запросе")
 
     query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=?", (form["company_id"]))
+        "SELECT * FROM recruiters WHERE id=?", (form["company_id"],))
 
     companydata = query_company.fetchone()
 
     if user["id"] != companydata["owner_id"]:
-        return redirect(f"/addvacancy?id={form['company_id']}&error=Эта компания вам не принадлежит")
+        return redirect(f"/editvacancy?id={form['id']}&error=Эта компания вам не принадлежит")
 
     query = db.get_db().execute(
         "UPDATE vacancies SET recruiter_id=?, city=?, job_description=?, min_salary=?, max_salary=?, job_name=? WHERE id=?",
-        (form["company_id"], form["city"], form["description"] if "description" in form else None, int(form["min_salary"]), int(form["max_salary"]), form["job_name"], form["id"]))
+        (form["company_id"],
+         form["city"],
+         form["description"] if "description" in form else None,
+         int(form["min_salary"]) if form["min_salary"] != '' else None,
+         int(form["max_salary"]) if form["max_salary"] != '' else None,
+         form["job_name"],
+         form["id"]))
     db.get_db().commit()
 
     return redirect(f"/vacancy?id={form['id']}")
@@ -337,7 +350,7 @@ def delete_vacancy():
         return redirect("/editvacancy?error=Недостаточно данных в запросе")
 
     query_vacancy = db.get_db().execute(
-        "SELECT vacancies WHERE id=?", (form["id"]))
+        "SELECT * FROM vacancies WHERE id=?", (form["id"],))
 
     vacancydata = query_vacancy.fetchone()
 
@@ -345,7 +358,7 @@ def delete_vacancy():
         return redirect("/editvacancy?error=Эта компания вам не принадлежит")
 
     query = db.get_db().execute(
-        "DELETE FROM vacancies WHERE id=?", (form["id"],))
+        "DELETE * FROM vacancies WHERE id=?", (form["id"],))
     db.get_db().commit()
 
     return redirect("/lk")

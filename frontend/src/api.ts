@@ -4,7 +4,7 @@ import { redirect } from "react-router-dom";
 // export const endpoint = import.meta.env.DEV ? "http://127.0.0.1:5000" : "";
 export const endpoint = "";
 
-type CompanyType = {
+export type CompanyType = {
   company_description: string;
   company_name: string;
   contact_email: string;

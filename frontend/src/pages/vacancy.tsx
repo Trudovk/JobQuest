@@ -4,7 +4,7 @@ import {
   redirect,
   useLoaderData,
 } from "react-router-dom";
-import { requestVacancy } from "../api";
+import { requestVacancy, userOwnsCompany } from "../api";
 import { Contact } from "../components/base/Contact";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
@@ -16,11 +16,12 @@ export async function loader(a: LoaderFunctionArgs) {
   if (!id) return redirect("/vacancies") as never;
 
   const vacancy = await requestVacancy(parseInt(id));
-  return { vacancy };
+  const owned = await userOwnsCompany(vacancy.recruiter_id);
+  return { vacancy, owned };
 }
 
 export default function Vacancy() {
-  const { vacancy } = useLoaderData() as InferLoaderType<typeof loader>;
+  const { vacancy, owned } = useLoaderData() as InferLoaderType<typeof loader>;
   return (
     <>
       <Header />
@@ -35,7 +36,12 @@ export default function Vacancy() {
               <Pay pay={[vacancy.min_salary, vacancy.max_salary]} />
             </div>
           </div>
-          <div className="font-medium text-right">
+          <div className="font-medium md:text-right">
+            {owned && (
+              <Link className="btn mb-4" to={`/editvacancy?id=${vacancy.id}`}>
+                Редактировать
+              </Link>
+            )}
             <h2 className="text-xl mb-3">
               <Link to="" className="link">
                 {vacancy.company_name}

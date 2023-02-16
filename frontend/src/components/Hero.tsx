@@ -15,9 +15,13 @@ export const Hero: React.FC = () => {
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
           <h1 className="mb-5 text-5xl font-bold">JobQuest</h1>
+          <p className="mb-2">
+            JobQuest позволяет соискателям быстро и без особых усилий найти
+            идеальные возможности для карьерного роста.
+          </p>
           <p className="mb-5">
-            Найти работу мечты быстро и удобно вместе с JobQuest. Так же можете
-            опубликовать вакансию прямо сейчас за 5 минут!
+            Сервис также позволяет работодателям беспрепятственно и удобно
+            размещать вакансии всего за несколько минут.
           </p>
           <Link to="/vacancies" className="btn btn-secondary">
             Вакансии

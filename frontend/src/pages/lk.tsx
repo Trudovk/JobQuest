@@ -30,7 +30,7 @@ export default function Lk() {
               </button>
             </form>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <Link to="/addvacancy" className="btn">
               Создать вакансию
             </Link>
@@ -42,6 +42,9 @@ export default function Lk() {
         <div>
           <h2 className="my-4 font-bold">Ваши компании:</h2>
           <div className="card bg-base-200 px-4 py-2 h-fit shadow-lg">
+            {companies.length === 0 && (
+              <span className="font-bold text-lg">У вас еще нет компаний.</span>
+            )}
             {companies.map((c) => (
               <YourCompany
                 id={c.id}
@@ -50,6 +53,7 @@ export default function Lk() {
                   [c.contact_email, c.website].filter((c) => !!c) as string[]
                 }
                 description={c.company_description}
+                key={c.id}
               />
             ))}
           </div>

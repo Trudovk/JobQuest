@@ -15,7 +15,7 @@ type Props = {
   name?: string;
   required?: boolean;
   value?: string;
-  defaultValue?: string;
+  defaultValue?: string | number;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
   key?: string;
 };
@@ -73,6 +73,52 @@ export const Textarea: React.FC<Props> = (props) => {
         key={props.key}
         defaultValue={props.defaultValue}
       />
+    </div>
+  );
+};
+
+export const Select: React.FC<
+  Props & {
+    options: { [k: string]: string };
+  }
+> = (props) => {
+  const id = useId();
+
+  return (
+    <div className="form-control w-full">
+      <label className="label" htmlFor={id}>
+        <span className="label-text">{props.label}</span>
+        {props.required && (
+          <span className="label-text-alt text-error text-lg leading-none">
+            *
+          </span>
+        )}
+      </label>
+      <select
+        id={id}
+        name={props.name}
+        placeholder={props.placeholder}
+        className="select select-bordered w-full"
+        required={props.required}
+        value={props.value}
+        key={props.key}
+      >
+        {/* {!!props.placeholder && (
+          <option
+            disabled
+            selected={
+              !(!!props.defaultValue && props.defaultValue in props.options)
+            }
+          >
+            {props.placeholder}
+          </option>
+        )} */}
+        {Object.keys(props.options).map((k) => (
+          <option value={k} selected={props.defaultValue == k}>
+            {props.options[k]}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

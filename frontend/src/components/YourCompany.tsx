@@ -17,7 +17,7 @@ export const YourCompany: React.FC<Props> = (props) => {
           <div className="font-medium">Контакты компании:</div>
           <div>
             {props.contacts.map((c) => (
-              <Contact contact={c} />
+              <Contact contact={c} key={c} />
             ))}
           </div>
         </div>

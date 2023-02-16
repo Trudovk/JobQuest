@@ -1,13 +1,26 @@
 import { useState } from "react";
-import { Input } from "./base/Input";
+import { Input, Select } from "./base/Input";
 import { Pay } from "./Vacancy";
+import type { CompanyType } from "../api";
 
 type Props = {
-  pay?: [number | null, number | null];
+  companies: CompanyType[];
+  id?: number;
+  defaults?: {
+    job_name: string;
+    min_salary: number | null;
+    max_salary: number | null;
+    description: string;
+    city?: string;
+    company_id: number;
+  };
 };
 
 export const EditVacancy: React.FC<Props> = (props) => {
-  const defaultPay = props.pay ?? [null, null];
+  const defaultPay = [
+    props.defaults?.min_salary ?? null,
+    props.defaults?.max_salary ?? null,
+  ];
   const [pay, setPay] = useState({ from: defaultPay[0], to: defaultPay[1] });
 
   const parsePay = (p: string) => {
@@ -20,11 +33,13 @@ export const EditVacancy: React.FC<Props> = (props) => {
   };
   return (
     <>
+      {!!props.id && <input type="hidden" value={props.id} name="id" />}
       <Input
         label="Название должности:"
         placeholder="Должность"
         type="text"
-        name="post"
+        name="job_name"
+        defaultValue={props.defaults?.job_name}
         required
       />
       <div className="flex gap-4">
@@ -32,7 +47,7 @@ export const EditVacancy: React.FC<Props> = (props) => {
           label="Зарплата от:"
           placeholder="10000"
           type="number"
-          name="payfrom"
+          name="min_salary"
           key="payfrom"
           onChange={(e) =>
             setPay((o) => ({
@@ -46,7 +61,7 @@ export const EditVacancy: React.FC<Props> = (props) => {
           label="Зарплата до:"
           placeholder="20000"
           type="number"
-          name="payto"
+          name="max_salary"
           key="payto"
           onChange={(e) =>
             setPay((o) => ({
@@ -60,14 +75,20 @@ export const EditVacancy: React.FC<Props> = (props) => {
       <div className="form-control w-full max-w-xs">
         <div className="label">
           Предпросмотр:
-          <Pay pay={[pay.from, pay.to]} />
+          <div className="font-bold">
+            <Pay pay={[pay.from, pay.to]} />
+          </div>
         </div>
       </div>
-      <Input
+      <Select
         label="Компания:"
         placeholder="Компания"
         type="text"
-        name="company"
+        name="company_id"
+        defaultValue={props.defaults?.company_id ?? ""}
+        options={Object.fromEntries(
+          props.companies.map((c) => [c.id, c.company_name])
+        )}
         required
       />
       <Input
@@ -75,6 +96,7 @@ export const EditVacancy: React.FC<Props> = (props) => {
         placeholder="Описание"
         type="text"
         name="description"
+        defaultValue={props.defaults?.description}
         required
       />
       <Input
@@ -82,11 +104,12 @@ export const EditVacancy: React.FC<Props> = (props) => {
         placeholder="Город"
         type="text"
         name="city"
+        defaultValue={props.defaults?.city}
         required
       />
       <input
         type="submit"
-        className="btn btn-outline mx-auto mt-6"
+        className="btn btn-outline mx-auto mt-6 w-full"
         value="Подтвердить"
       />
     </>

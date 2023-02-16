@@ -40,7 +40,10 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
 
 def authenticate_user(email: str, password: str):
     query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email,))
-    user = dict(query.fetchone())
+    returned = query.fetchone()
+    if returned == None:
+        return
+    user = dict(returned)
     if user == None:
         return
     entered_hash = hash_password(password, user["salt"])
