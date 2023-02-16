@@ -85,13 +85,17 @@ def jobs():
 
     fil = "WHERE recruiter_id = %s" if recruiter != None else ""
     query_args = (perpage, (page*perpage) - perpage)
-    query = db.get_db().execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id " + fil + " ORDER BY id DESC LIMIT %s OFFSET %s",
-                                query_args if recruiter == None else (recruiter, query_args[0], query_args[1]))
-    vacancies = query.fetchall()
+    with db.get_db().cursor() as cursor:
+        cursor.execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id " + fil + " ORDER BY id DESC LIMIT %s OFFSET %s",
+                       query_args if recruiter == None else (recruiter, query_args[0], query_args[1]))
+        vacancies = cursor.fetchall()
+
     vacancies = list(map(dict, vacancies))
 
-    count = db.get_db().execute(
-        "SELECT COUNT(*) FROM vacancies " + fil, (recruiter,) if recruiter != None else ()).fetchone()[0]
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT COUNT(*) FROM vacancies " + fil, (recruiter,) if recruiter != None else ())
+        count = cursor.fetchone()['COUNT(*)']
 
     return {"pagination": {"page": page, "perpage": perpage, "pages": ceil(count/perpage), "entries": count}, "vacancies": vacancies}
 
@@ -115,16 +119,18 @@ def companies():
     if user == None:
         return {"error": "session invalid"}
 
-    query = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE owner_id = %s", (user["id"],))
-    comps = map(dict, query.fetchall())
-    return list(comps)
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM recruiters WHERE owner_id = %s", (user["id"],))
+        comps = map(dict, cursor.fetchall())
+        return list(comps)
 
 
 @api_bp.route("/company/<id>")
 def company(id: str):
-    query = db.get_db().execute("SELECT * FROM recruiters WHERE id = %d", (id,))
-    company = query.fetchone()
+    with db.get_db().cursor() as cursor:
+        query = cursor.execute("SELECT * FROM recruiters WHERE id = %s", (id,))
+        company = cursor.fetchone()
 
     if company == None:
         return {"error": "Такой компании не существует"}
@@ -148,8 +154,10 @@ def create_company():
     ):
         return redirect("/addcompany?error=Недостаточно данных в запросе")
 
-    query = db.get_db().execute(
-        "INSERT INTO recruiters (owner_id, company_name, company_description, website, contact_email) VALUES (%s, %s, %s, %s, %s)", (user["id"], form["company"], form["description"], form["link"] if "link" in form else None, form["email"]))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO recruiters (owner_id, company_name, company_description, website, contact_email) VALUES (%s, %s, %s, %s, %s)", (user["id"], form["company"], form["description"], form["link"] if "link" in form else None, form["email"]))
+
     db.get_db().commit()
 
     return redirect("/lk")
@@ -172,21 +180,23 @@ def edit_company():
     ):
         return redirect("/addcompany?error=Недостаточно данных в запросе")
 
-    query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=%s", (form["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM recruiters WHERE id=%s", (form["id"],))
 
-    companydata = query_company.fetchone()
+        companydata = cursor.fetchone()
 
     if user["id"] != companydata["owner_id"]:
         return redirect("/editcompany?error=Эта компания вам не принадлежит")
 
     website = form["website"] if "website" in form else None
 
-    query = db.get_db().execute(
-        "UPDATE recruiters SET company_name=%s, company_description=%s, website=%s, contact_email=%s WHERE id=%s",
-        (form["company"], form["description"],
-         website, form["email"], form["id"])
-    )
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "UPDATE recruiters SET company_name=%s, company_description=%s, website=%s, contact_email=%s WHERE id=%s",
+            (form["company"], form["description"],
+             website, form["email"], form["id"])
+        )
     db.get_db().commit()
 
     return redirect("/lk")
@@ -206,18 +216,19 @@ def delete_company():
     ):
         return redirect("/editcompany?error=Недостаточно данных в запросе")
 
-    query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=%s", (form["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM recruiters WHERE id=%s", (form["id"],))
 
-    companydata = query_company.fetchone()
+        companydata = cursor.fetchone()
 
     if user["id"] != companydata["owner_id"]:
         return redirect(f"/editcompany?id={form['id']}&error=Эта компания вам не принадлежит")
-
-    query_vac = db.get_db().execute(
-        "DELETE FROM vacancies WHERE recruiter_id=%s", (form["id"],))
-    query = db.get_db().execute(
-        "DELETE FROM recruiters WHERE id=%s", (form["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM vacancies WHERE recruiter_id=%s", (form["id"],))
+        cursor.execute(
+            "DELETE FROM recruiters WHERE id=%s", (form["id"],))
     db.get_db().commit()
 
     return redirect("/lk")
@@ -233,8 +244,10 @@ def invalidate_session():
     if user == None:
         return redirect("/")
 
-    query = db.get_db().execute(
-        "UPDATE users SET session_token = NULL WHERE id = %s", (user["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "UPDATE users SET session_token = NULL WHERE id = %s", (user["id"],))
+
     db.get_db().commit()
 
     res = make_response()
@@ -245,9 +258,10 @@ def invalidate_session():
 
 @api_bp.route("/vacancy/<id>")
 def vacancy(id: str):
-    query = db.get_db().execute("SELECT recruiters.company_name, recruiters.website, recruiters.contact_email, vacancies.* FROM recruiters INNER JOIN vacancies ON vacancies.recruiter_id=recruiters.id WHERE vacancies.id = %s",
-                                (id,))
-    vacancy = query.fetchone()
+    with db.get_db().cursor() as cursor:
+        cursor.execute("SELECT recruiters.company_name, recruiters.website, recruiters.contact_email, vacancies.* FROM recruiters INNER JOIN vacancies ON vacancies.recruiter_id=recruiters.id WHERE vacancies.id = %s",
+                       (id,))
+        vacancy = cursor.fetchone()
 
     if vacancy == None:
         return {"error": "Такой вакансии не существует"}
@@ -273,22 +287,25 @@ def create_vacancy():
     ):
         return redirect("/addvacancy?error=Недостаточно данных в запросе")
 
-    query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=%s", (form["company_id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM recruiters WHERE id=%s", (form["company_id"],))
 
-    companydata = query_company.fetchone()
+        companydata = cursor.fetchone()
 
     if user["id"] != companydata["owner_id"]:
         return redirect("/addvacancy?error=Эта компания вам не принадлежит")
 
-    query = db.get_db().execute(
-        "INSERT INTO vacancies (recruiter_id, city, job_description, min_salary, max_salary, job_name) VALUES (%s, %s, %s, %s, %s, %s)",
-        (form["company_id"],
-         form["city"],
-         form["description"] if "description" in form else None,
-         int(form["min_salary"]) if form["min_salary"] != '' else None,
-         int(form["max_salary"]) if form["max_salary"] != '' else None,
-         form["job_name"]))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO vacancies (recruiter_id, city, job_description, min_salary, max_salary, job_name) VALUES (%s, %s, %s, %s, %s, %s)",
+            (form["company_id"],
+             form["city"],
+             form["description"] if "description" in form else None,
+             int(form["min_salary"]) if form["min_salary"] != '' else None,
+             int(form["max_salary"]) if form["max_salary"] != '' else None,
+             form["job_name"]))
+
     db.get_db().commit()
 
     return redirect("/lk")
@@ -312,24 +329,25 @@ def edit_vacancy():
         (not 'max_salary' in form)
     ):
         return redirect(f"/editvacancy?{('id=' + form['id'] + '&') if 'id' in form else ''}error=Недостаточно данных в запросе")
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM recruiters WHERE id=%s", (form["company_id"],))
 
-    query_company = db.get_db().execute(
-        "SELECT * FROM recruiters WHERE id=?", (form["company_id"],))
-
-    companydata = query_company.fetchone()
+        companydata = cursor.fetchone()
 
     if user["id"] != companydata["owner_id"]:
         return redirect(f"/editvacancy?id={form['id']}&error=Эта компания вам не принадлежит")
 
-    query = db.get_db().execute(
-        "UPDATE vacancies SET recruiter_id=%s, city=%s, job_description=%s, min_salary=%s, max_salary=%s, job_name=%s WHERE id=%s",
-        (form["company_id"],
-         form["city"],
-         form["description"] if "description" in form else None,
-         int(form["min_salary"]) if form["min_salary"] != '' else None,
-         int(form["max_salary"]) if form["max_salary"] != '' else None,
-         form["job_name"],
-         form["id"]))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "UPDATE vacancies SET recruiter_id=%s, city=%s, job_description=%s, min_salary=%s, max_salary=%s, job_name=%s WHERE id=%s",
+            (form["company_id"],
+             form["city"],
+             form["description"] if "description" in form else None,
+             int(form["min_salary"]) if form["min_salary"] != '' else None,
+             int(form["max_salary"]) if form["max_salary"] != '' else None,
+             form["job_name"],
+             form["id"]))
     db.get_db().commit()
 
     return redirect(f"/vacancy?id={form['id']}")
@@ -349,16 +367,18 @@ def delete_vacancy():
     ):
         return redirect("/editvacancy?error=Недостаточно данных в запросе")
 
-    query_vacancy = db.get_db().execute(
-        "SELECT vacancies.*, recruiters.owner_id FROM vacancies INNER JOIN recruiters ON recruiters.id=vacancies.recruiter_id WHERE vacancies.id=%s", (form["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT vacancies.*, recruiters.owner_id FROM vacancies INNER JOIN recruiters ON recruiters.id=vacancies.recruiter_id WHERE vacancies.id=%s", (form["id"],))
 
-    vacancydata = query_vacancy.fetchone()
+        vacancydata = cursor.fetchone()
 
     if user["id"] != vacancydata["owner_id"]:
         return redirect("/editvacancy?error=Эта компания вам не принадлежит")
 
-    query = db.get_db().execute(
-        "DELETE FROM vacancies WHERE id=%s", (form["id"],))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM vacancies WHERE id=%s", (form["id"],))
     db.get_db().commit()
 
     return redirect("/lk")

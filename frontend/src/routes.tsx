@@ -1,10 +1,11 @@
-import { LoaderFunctionArgs } from "react-router-dom";
+import { LoaderFunctionArgs, RouteObject } from "react-router-dom";
 
 const PagePathsWithComponents: Record<
   string,
   {
     default: () => JSX.Element;
     loader?: (a: LoaderFunctionArgs) => Promise<any>;
+    title?: string;
   }
 > = import.meta.glob("./pages/*.tsx", { eager: true });
 
@@ -31,7 +32,7 @@ const loadingWrapper = async (ldr: () => Promise<any>) => {
   return result;
 };
 
-export const routerRoutes = routes.map(
+export const routerRoutes: RouteObject[] = routes.map(
   ({ path, component: RouteComp, loader }) => ({
     path,
     element: <RouteComp />,

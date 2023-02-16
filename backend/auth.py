@@ -24,26 +24,28 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
     salt = generate_random_sha1()
     hash = hash_password(password, salt)
 
-    query = db.get_db().execute("SELECT * FROM users WHERE email=%s;", (email,))
-    existing_user = query.fetchone()
+    with db.get_db().cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE email=%s;", (email,))
+        existing_user = cursor.fetchone()
 
     # if user exists, return
     if existing_user != None:
         return False
 
-    db.get_db().execute('INSERT INTO users ("email", "passhash", "salt", "first_name", "last_name") VALUES (%s, %s, %s, %s, %s);',
-                        (email, hash, salt, first_name, last_name))
+    with db.get_db().cursor() as cursor:
+        cursor.execute("INSERT INTO users (email, passhash, salt, first_name, last_name) VALUES (%s, %s, %s, %s, %s);",
+                       (email, hash, salt, first_name, last_name))
+
     db.get_db().commit()
 
     return True
 
 
 def authenticate_user(email: str, password: str):
-    query = db.get_db().execute("SELECT * FROM users WHERE email=%s;", (email,))
-    returned = query.fetchone()
-    if returned == None:
-        return
-    user = dict(returned)
+    with db.get_db().cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE email=%s;", (email,))
+        user = cursor.fetchone()
+
     if user == None:
         return
     entered_hash = hash_password(password, user["salt"])
@@ -51,13 +53,18 @@ def authenticate_user(email: str, password: str):
         return
 
     session = generate_random_sha256()
-    db.get_db().execute("UPDATE users SET session_token=%s WHERE email=%s;", (session, email))
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "UPDATE users SET session_token=%s WHERE email=%s;", (session, email))
+
     db.get_db().commit()
     return session
 
 
 def get_user_from_session(session: str):
-    query = db.get_db().execute(
-        "SELECT email, first_name, last_name, id FROM users WHERE session_token=%s;", (session,))
-    existing_user = query.fetchone()
-    return dict(existing_user)
+    with db.get_db().cursor() as cursor:
+        cursor.execute(
+            "SELECT email, first_name, last_name, id FROM users WHERE session_token=%s;", (session,))
+        existing_user = cursor.fetchone()
+
+    return existing_user

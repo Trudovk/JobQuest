@@ -55,6 +55,9 @@ export default function CompanyPage() {
         <div>
           <h2 className="my-4 font-bold">Вакансии компании:</h2>
           <div className="card bg-base-200 px-4 py-2 h-fit">
+            {vacancies.pagination.entries === 0 && (
+              <span>У этой компании еще нету вакансий.</span>
+            )}
             {vacancies.vacancies.map((v) => (
               <Vacancy
                 id={v.id}

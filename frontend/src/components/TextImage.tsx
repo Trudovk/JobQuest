@@ -13,9 +13,9 @@ export const TextImage: React.FC<Props> = (props) => {
     />
   );
   return (
-    <div className="flex items-center gap-6 my-10">
+    <div className="flex flex-wrap items-center gap-6 my-10 justify-center">
       {props.position === "left" && image}
-      <div className="flex-grow">
+      <div className="flex-grow basis-0">
         <h2 className=" text-4xl font-bold mb-5">{props.title}</h2>
         <p>{props.text}</p>
       </div>

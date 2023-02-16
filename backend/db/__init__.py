@@ -1,4 +1,4 @@
-import sqlite3
+import pymysql
 
 import click
 from flask import Flask, current_app, g
@@ -6,11 +6,12 @@ from flask import Flask, current_app, g
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
+        g.db = pymysql.connect(host=current_app.config['HOST'],
+                               port=current_app.config['PORT'],
+                               user=current_app.config['USERNAME'],
+                               password=current_app.config['PASSWORD'],
+                               database=current_app.config['DATABASE'],
+                               cursorclass=pymysql.cursors.DictCursor)
 
     return g.db
 

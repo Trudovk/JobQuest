@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import jbLogoLight from "../../assets/images/logolight.svg";
 
 export const Header: React.FC = () => {
   const loggedIn = document.cookie.indexOf("session=") !== -1;
@@ -57,7 +58,7 @@ export const Header: React.FC = () => {
           </ul>
         </div>
         <Link to="/" className="btn btn-ghost normal-case text-xl">
-          JobQuest
+          <img src={jbLogoLight} alt="JobQuest Logo" className="h-[0.9rem]" />
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">

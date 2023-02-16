@@ -1,7 +1,9 @@
 {
-    "DATABASE": "./data/database.db",
     "DEBUG": true,
-    "USERNAME": "admin",
-    "PASSWORD": "default",
+    "HOST": "clubhouse.mlntcandy.com",
+    "PORT": 4306,
+    "USERNAME": "jobquest",
+    "PASSWORD": "bd015ebe67bd8a20ac9ed0c937f404f6",
+    "DATABASE": "jobquest",
     "APP_FOLDER": "../frontend/dist/client/"
 }
