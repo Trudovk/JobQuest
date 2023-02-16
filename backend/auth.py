@@ -24,14 +24,14 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
     salt = generate_random_sha1()
     hash = hash_password(password, salt)
 
-    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email,))
+    query = db.get_db().execute("SELECT * FROM users WHERE email=%s;", (email,))
     existing_user = query.fetchone()
 
     # if user exists, return
     if existing_user != None:
         return False
 
-    db.get_db().execute('INSERT INTO users ("email", "passhash", "salt", "first_name", "last_name") VALUES (?, ?, ?, ?, ?);',
+    db.get_db().execute('INSERT INTO users ("email", "passhash", "salt", "first_name", "last_name") VALUES (%s, %s, %s, %s, %s);',
                         (email, hash, salt, first_name, last_name))
     db.get_db().commit()
 
@@ -39,7 +39,7 @@ def register_user(email: str, password: str, first_name: str, last_name: str):
 
 
 def authenticate_user(email: str, password: str):
-    query = db.get_db().execute("SELECT * FROM users WHERE email=?;", (email,))
+    query = db.get_db().execute("SELECT * FROM users WHERE email=%s;", (email,))
     returned = query.fetchone()
     if returned == None:
         return
@@ -51,13 +51,13 @@ def authenticate_user(email: str, password: str):
         return
 
     session = generate_random_sha256()
-    db.get_db().execute("UPDATE users SET session_token=? WHERE email=?;", (session, email))
+    db.get_db().execute("UPDATE users SET session_token=%s WHERE email=%s;", (session, email))
     db.get_db().commit()
     return session
 
 
 def get_user_from_session(session: str):
     query = db.get_db().execute(
-        "SELECT email, first_name, last_name, id FROM users WHERE session_token=?;", (session,))
+        "SELECT email, first_name, last_name, id FROM users WHERE session_token=%s;", (session,))
     existing_user = query.fetchone()
     return dict(existing_user)
