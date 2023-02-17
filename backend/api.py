@@ -83,18 +83,32 @@ def jobs():
     perpage = int(args["perpage"])
     recruiter = args["recruiter"] if 'recruiter' in args else None
 
-    fil = "WHERE recruiter_id = %s" if recruiter != None else ""
-    query_args = (perpage, (page*perpage) - perpage)
+    search = args["search"] if 'search' in args else None
+    minsal = args["minsal"] if 'minsal' in args else '0'
+    maxsal = args["maxsal"] if 'maxsal' in args else '100000000000000'
+
+    where = "WHERE " + " AND ".join(filter(lambda s: s != None,
+                                           ["MATCH (vacancies.job_name) AGAINST (%s)" if search != None else None,
+                                            "recruiter_id = %s" if recruiter != None else None,
+                                            "vacancies.min_salary > %s AND vacancies.max_salary < %s"]
+                                           ))
+
+    whereparams = ((() if search == None else (search,))
+                   + (() if recruiter == None else (recruiter,))
+                   + (minsal, maxsal))
+
     with db.get_db().cursor() as cursor:
-        cursor.execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id " + fil + " ORDER BY id DESC LIMIT %s OFFSET %s",
-                       query_args if recruiter == None else (recruiter, query_args[0], query_args[1]))
+        cursor.execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id "
+                       + where
+                       + "ORDER BY vacancies.id DESC LIMIT %s OFFSET %s",
+                       whereparams + (perpage, (page*perpage) - perpage))
         vacancies = cursor.fetchall()
 
     vacancies = list(map(dict, vacancies))
 
     with db.get_db().cursor() as cursor:
         cursor.execute(
-            "SELECT COUNT(*) FROM vacancies " + fil, (recruiter,) if recruiter != None else ())
+            "SELECT COUNT(*) FROM vacancies " + where, whereparams)
         count = cursor.fetchone()['COUNT(*)']
 
     return {"pagination": {"page": page, "perpage": perpage, "pages": ceil(count/perpage), "entries": count}, "vacancies": vacancies}
