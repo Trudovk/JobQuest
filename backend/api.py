@@ -84,18 +84,21 @@ def jobs():
     recruiter = args["recruiter"] if 'recruiter' in args else None
 
     search = args["search"] if 'search' in args else None
-    minsal = args["minsal"] if 'minsal' in args else '0'
-    maxsal = args["maxsal"] if 'maxsal' in args else '100000000000000'
+    minsal = args["minsal"] if 'minsal' in args else None
+    maxsal = args["maxsal"] if 'maxsal' in args else None
 
     where = "WHERE " + " AND ".join(filter(lambda s: s != None,
                                            ["MATCH (vacancies.job_name) AGAINST (%s)" if search != None else None,
                                             "recruiter_id = %s" if recruiter != None else None,
-                                            "vacancies.min_salary > %s AND vacancies.max_salary < %s"]
+                                            "vacancies.min_salary > %s" if minsal != None else None,
+                                            "vacancies.max_salary < %s" if maxsal != None else None]
                                            ))
 
     whereparams = ((() if search == None else (search,))
                    + (() if recruiter == None else (recruiter,))
-                   + (minsal, maxsal))
+                   + (() if minsal == None else (minsal,))
+                   + (() if maxsal == None else (maxsal,))
+                   )
 
     with db.get_db().cursor() as cursor:
         cursor.execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id "
