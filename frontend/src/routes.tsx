@@ -1,4 +1,5 @@
 import { LoaderFunctionArgs, RouteObject } from "react-router-dom";
+import ErrorPage from "./pages/Error";
 
 const PagePathsWithComponents: Record<
   string,
@@ -39,5 +40,6 @@ export const routerRoutes: RouteObject[] = routes.map(
     loader: loader
       ? (a: LoaderFunctionArgs) => loadingWrapper(() => loader(a))
       : undefined,
+    errorElement: <ErrorPage />,
   })
 );

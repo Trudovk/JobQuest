@@ -34,7 +34,7 @@ export const Pay = (p: { pay: Props["pay"] }) => {
 
 export const Vacancy: React.FC<Props> = (props) => {
   return (
-    <div className="border-b border-neutral last:border-b-0 py-2">
+    <div className="border-b border-neutral/25 last:border-b-0 py-2">
       <div className="flex justify-between max-md:flex-col-reverse mb-2">
         <h2 className="font-bold text-xl">{props.post}</h2>
         <div>г. {props.city}</div>
