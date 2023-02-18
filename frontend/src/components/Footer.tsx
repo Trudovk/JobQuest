@@ -6,23 +6,24 @@ export const Footer: React.FC = () => {
   return (
     <footer className="footer p-10 bg-base-200 text-base-content">
       <div>
-        <Link to="/" className="btn btn-ghost normal-case text-xl">
+        <Link to="/" className="py-5 mt-2">
           <img src={jbLogoLight} alt="JobQuest Logo" className="h-4" />
         </Link>
+        <p className="">JobQuest 2023</p>
       </div>
-      <div>
+      {/* <div>
         <span className="footer-title">Сделано в 2023г.</span>
-        {/* <a className="link link-hover">Branding</a>
+        <a className="link link-hover">Branding</a>
         <a className="link link-hover">Design</a>
         <a className="link link-hover">Marketing</a>
-        <a className="link link-hover">Advertisement</a> */}
-      </div>
+        <a className="link link-hover">Advertisement</a>
+      </div> */}
       <div>
-        <span className="footer-title">поменять перед продом!!!</span>
-        {/* <a className="link link-hover">About us</a>
-        <a className="link link-hover">Contact</a>
-        <a className="link link-hover">Jobs</a>
-        <a className="link link-hover">Press kit</a> */}
+        <span className="footer-title">Проект делали:</span>
+        <span>Кошелев Егор</span>
+        <span>Андрюшин Александр</span>
+        <span>Волоруев Владимир</span>
+        <span>Сидоров Андрей</span>
       </div>
       <div>
         {/* <img src={mplogo} className="w-14 h-14 object-fill" /> */}

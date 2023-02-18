@@ -29,19 +29,19 @@ export const Pay = (p: { pay: Props["pay"] }) => {
       .map((p) => `${whitespaceNumber(p as number)} ₽`)
       .join(" – "),
   ].join(" ");
-  return <div className=" text-green-600">{pay}</div>;
+  return <div className=" text-green-600 tracking-tight">{pay}</div>;
 };
 
 export const Vacancy: React.FC<Props> = (props) => {
   return (
     <div className="border-b border-neutral last:border-b-0 py-2">
-      <div className="flex justify-between mb-2">
-        <h2 className="font-bold">{props.post}</h2>
+      <div className="flex justify-between max-md:flex-col-reverse mb-2">
+        <h2 className="font-bold text-xl">{props.post}</h2>
         <div>г. {props.city}</div>
       </div>
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-4 max-md:flex-col items-start">
         <div className="md:min-w-[10rem]">
-          <div className="font-semibold">
+          <div className="font-semibold max-md:text-lg">
             <Pay pay={props.pay} />
           </div>
           <Link to={`/companypage?id=${props.company_id}`} className="link">
@@ -49,7 +49,7 @@ export const Vacancy: React.FC<Props> = (props) => {
           </Link>
         </div>
         <p className="block flex-grow line-clamp-3">{props.description}</p>
-        <div className="flex flex-col justify-between gap-2">
+        <div className="flex flex-col justify-between gap-2 max-md:w-full flex-shrink">
           {props.owned && (
             <Link to={`/editvacancy?id=${props.id}`} className="btn">
               Редактировать

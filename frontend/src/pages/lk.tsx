@@ -19,7 +19,7 @@ export default function Lk() {
       <Header />
       <main className="px-4 my-3 w-full max-w-7xl mx-auto">
         <div className="flex justify-between">
-          <div>
+          <div className="flex-grow">
             <h2 className="font-bold text-3xl">
               {profile.first_name} {profile.last_name}
             </h2>
@@ -30,11 +30,11 @@ export default function Lk() {
               </button>
             </form>
           </div>
-          <div className="flex gap-3 flex-wrap">
-            <Link to="/addvacancy" className="btn">
+          <div className="flex gap-3 flex-wrap flex-shrink w-fit h-fit justify-end">
+            <Link to="/addvacancy" className="btn m-0">
               Создать вакансию
             </Link>
-            <Link to="/addcompany" className="btn">
+            <Link to="/addcompany" className="btn m-0">
               Создать компанию
             </Link>
           </div>

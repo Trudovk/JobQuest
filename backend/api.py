@@ -83,35 +83,37 @@ def jobs():
     perpage = int(args["perpage"])
     recruiter = args["recruiter"] if 'recruiter' in args else None
 
-    search = args["search"] if 'search' in args else None
+    search = args["search"] if 'search' in args and args["search"] != '' else None
     minsal = args["minsal"] if 'minsal' in args else None
     maxsal = args["maxsal"] if 'maxsal' in args else None
 
-    where = "WHERE " + " AND ".join(filter(lambda s: s != None,
-                                           ["MATCH (vacancies.job_name) AGAINST (%s)" if search != None else None,
-                                            "recruiter_id = %s" if recruiter != None else None,
-                                            "vacancies.min_salary > %s" if minsal != None else None,
-                                            "vacancies.max_salary < %s" if maxsal != None else None]
-                                           ))
+    where = " AND ".join(filter(lambda s: s != None,
+                                ["MATCH (vacancies.job_name) AGAINST (%s IN BOOLEAN MODE)" if search != None else None,
+                                 "recruiter_id = %s" if recruiter != None else None,
+                                 "vacancies.min_salary > %s" if minsal != None else None,
+                                 "vacancies.max_salary < %s" if maxsal != None else None]
+                                ))
 
-    whereparams = ((() if search == None else (search,))
+    whereparams = ((() if search == None else ("+".join(map(lambda s: s+"*" if len(s) > 1 else s, search.strip().split(' '))),))
                    + (() if recruiter == None else (recruiter,))
                    + (() if minsal == None else (minsal,))
                    + (() if maxsal == None else (maxsal,))
                    )
 
+    params = whereparams + (perpage, (page*perpage) - perpage)
+    query = ("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id "
+             + (("WHERE " + where) if where != "" else "")
+             + " ORDER BY vacancies.id DESC LIMIT %s OFFSET %s")
+
     with db.get_db().cursor() as cursor:
-        cursor.execute("SELECT recruiters.company_name, vacancies.* FROM vacancies LEFT JOIN recruiters ON vacancies.recruiter_id=recruiters.id "
-                       + where
-                       + "ORDER BY vacancies.id DESC LIMIT %s OFFSET %s",
-                       whereparams + (perpage, (page*perpage) - perpage))
+        cursor.execute(query, params)
         vacancies = cursor.fetchall()
 
     vacancies = list(map(dict, vacancies))
 
     with db.get_db().cursor() as cursor:
         cursor.execute(
-            "SELECT COUNT(*) FROM vacancies " + where, whereparams)
+            "SELECT COUNT(*) FROM vacancies " + (("WHERE " + where) if where != "" else ""), whereparams)
         count = cursor.fetchone()['COUNT(*)']
 
     return {"pagination": {"page": page, "perpage": perpage, "pages": ceil(count/perpage), "entries": count}, "vacancies": vacancies}

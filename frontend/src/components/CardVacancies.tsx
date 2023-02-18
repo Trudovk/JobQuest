@@ -8,6 +8,9 @@ type Props = {
 export const CardVacancies: React.FC<Props> = (props) => {
   return (
     <div className="card bg-base-200 px-4 py-2 h-fit shadow-xl">
+      {props.vacancies.length === 0 && (
+        <div className="text-lg">Ни одной вакансии не нашлось</div>
+      )}
       {props.vacancies.map((p) => (
         <Vacancy
           id={p.id}
