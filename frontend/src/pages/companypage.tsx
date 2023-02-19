@@ -16,7 +16,7 @@ export async function loader(a: LoaderFunctionArgs) {
   if (!id) return redirect("/vacancies") as never;
 
   const companyData = await requestCompany(parseInt(id));
-  const vacancies = await requestVacancies(1, 100, parseInt(id));
+  const vacancies = await requestVacancies(1, 1000, parseInt(id));
   const userOwns = await userOwnsCompany(parseInt(id));
   return { companyData, vacancies, userOwns };
 }
@@ -58,18 +58,20 @@ export default function CompanyPage() {
             {vacancies.pagination.entries === 0 && (
               <span>У этой компании еще нету вакансий.</span>
             )}
-            {vacancies.vacancies.map((v) => (
-              <Vacancy
-                id={v.id}
-                post={v.job_name}
-                pay={[v.min_salary, v.max_salary]}
-                company={v.company_name}
-                company_id={v.recruiter_id}
-                description={v.job_description}
-                city={v.city}
-                owned={userOwns}
-              />
-            ))}
+            {vacancies.vacancies
+              .filter(({ recruiter_id }) => recruiter_id === companyData.id)
+              .map((v) => (
+                <Vacancy
+                  id={v.id}
+                  post={v.job_name}
+                  pay={[v.min_salary, v.max_salary]}
+                  company={v.company_name}
+                  company_id={v.recruiter_id}
+                  description={v.job_description}
+                  city={v.city}
+                  owned={userOwns}
+                />
+              ))}
           </div>
         </div>
       </main>

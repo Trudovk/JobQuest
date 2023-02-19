@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, redirect, useLoaderData } from "react-router-dom";
 import { requestOwnedCompanies, requestProfile } from "../api";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
@@ -7,6 +7,7 @@ import { YourCompany } from "../components/YourCompany";
 export async function loader() {
   const companies = await requestOwnedCompanies();
   const profile = await requestProfile();
+  if (!("id" in profile)) return redirect("/login") as never;
   return { companies, profile };
 }
 

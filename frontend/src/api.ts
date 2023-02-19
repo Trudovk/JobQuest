@@ -46,6 +46,10 @@ export type PaginationType = {
   perpage: number;
 };
 
+export type ErrorResponseType = {
+  error: string;
+};
+
 function get_cookie(name: string) {
   return document.cookie.split(";").some((c) => {
     return c.trim().startsWith(name + "=");
@@ -63,9 +67,12 @@ function delete_cookie(name: string, path?: string, domain?: string) {
   }
 }
 
-async function makeRequest<T>(path: string): Promise<T> {
+async function makeRequest<T, B extends boolean | undefined>(
+  path: string,
+  ignoreSession?: B
+): Promise<B extends true ? T | ErrorResponseType : T> {
   const invalidSession = () => {
-    delete_cookie("session");
+    delete_cookie("session"); // problematic!
     redirect("/login?error=Сессия истекла, войдите снова");
   };
 
@@ -74,6 +81,9 @@ async function makeRequest<T>(path: string): Promise<T> {
     const response = await res.json();
     console.log(`Requested "${path}", got: `, response);
     if ("error" in response && response.error === "session invalid") {
+      if (typeof ignoreSession !== "undefined" && ignoreSession === true)
+        return response;
+
       return invalidSession() as never;
     }
     return response as T;
@@ -110,10 +120,13 @@ export function usePagination<T extends { pagination: PaginationType }>(
 }
 
 export async function requestCaptcha() {
-  return await makeRequest<{
-    hash: string;
-    link: string;
-  }>(`${endpoint}/api/requestcaptcha`);
+  return await makeRequest<
+    {
+      hash: string;
+      link: string;
+    },
+    false
+  >(`${endpoint}/api/requestcaptcha`);
 }
 
 export async function requestVacancies(
@@ -123,10 +136,13 @@ export async function requestVacancies(
   search?: string,
   salary?: [number | null, number | null]
 ) {
-  return await makeRequest<{
-    pagination: PaginationType;
-    vacancies: VacancyType[];
-  }>(
+  return await makeRequest<
+    {
+      pagination: PaginationType;
+      vacancies: VacancyType[];
+    },
+    false
+  >(
     // `${endpoint}/api/jobs?page=${page}&perpage=${perpage}&${
     //   !!companyId ? `recruiter=${companyId}` : ""
     // }`
@@ -142,30 +158,36 @@ export async function requestVacancies(
 }
 
 export async function requestVacancy(id: number) {
-  return await makeRequest<VacancyExtendedType>(
+  return await makeRequest<VacancyExtendedType, false>(
     `${endpoint}/api/vacancy/${id}`
   );
 }
 
 export async function requestOwnedCompanies() {
-  return await makeRequest<CompanyType[]>(`${endpoint}/api/profile/companies`);
+  return await makeRequest<CompanyType[], false>(
+    `${endpoint}/api/profile/companies`
+  );
 }
 
 export async function requestProfile() {
-  return await makeRequest<{
-    email: string;
-    id: number;
-    first_name: string;
-    last_name: string;
-  }>(`${endpoint}/api/profile`);
+  return await makeRequest<
+    {
+      email: string;
+      id: number;
+      first_name: string;
+      last_name: string;
+    },
+    true
+  >(`${endpoint}/api/profile`, true);
 }
 
 export async function requestCompany(id: number) {
-  return await makeRequest<CompanyType>(`${endpoint}/api/company/${id}`);
+  return await makeRequest<CompanyType, false>(`${endpoint}/api/company/${id}`);
 }
 
 export async function userOwnsCompany(companyId: number) {
-  const userId = (await requestProfile()).id;
+  const user = await requestProfile();
+  if (!("id" in user)) return false;
   const companyOwner = (await requestCompany(companyId)).owner_id;
-  return userId === companyOwner;
+  return user.id === companyOwner;
 }
