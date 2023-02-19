@@ -1,7 +1,8 @@
 from os import mkdir
 from flask_cors import CORS
 from flask import Flask, send_from_directory, request, Response
-from . import captchas, api
+import captchas
+import api
 from requests import request as rq
 
 import mimetypes
@@ -20,7 +21,7 @@ def create_app():
     if app.config["DEBUG"]:
         CORS(app)
 
-    from . import db
+    import db
     db.init_app(app)
 
     return app

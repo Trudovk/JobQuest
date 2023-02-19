@@ -1,5 +1,7 @@
 from flask import Blueprint, request, redirect, make_response, send_file
-from . import db, auth, captchas
+import db
+import auth
+import captchas
 from math import ceil
 
 api_bp = Blueprint("api", __name__)

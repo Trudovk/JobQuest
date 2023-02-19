@@ -1,4 +1,4 @@
-from . import db
+import db
 from random import randbytes
 from hashlib import sha1, sha256
 
